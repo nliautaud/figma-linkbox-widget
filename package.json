@@ -1,0 +1,23 @@
+{
+  "name": "web-bookmark",
+  "version": "1.0.0",
+  "description": "Your Figma widget",
+  "scripts": {
+    "build": "esbuild widget-src/code.tsx --outfile=dist/code.js --bundle --minify --target=chrome58",
+    "watch": "npm run build -- --watch"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@figma/plugin-typings": "*",
+    "@figma/widget-typings": "*",
+    "@types/node": "^20.8.2",
+    "esbuild": "*",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "node-html-parser": "^6.1.10",
+    "url": "^0.11.3"
+  }
+}
