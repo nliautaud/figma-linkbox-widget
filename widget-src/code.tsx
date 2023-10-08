@@ -84,6 +84,16 @@ function Widget() {
     const out = json ? await response.json() : await response.text();
     return out
   }
+  
+  const navigate = (url: string): Promise<void> => {
+    return new Promise<void>((resolve) => {
+      figma.showUI(
+        `<script>window.open('${url}', '_blank')</script>`,
+        { visible: false }
+      )
+      setTimeout(resolve, 1000)
+    })
+  }
 
   const updateUrl = async (str: string, reset = false) => {
     const parseMeta = (root: HTMLElement, name: string) => {
@@ -386,6 +396,7 @@ function Widget() {
                   width={s(24)}
                   height={s(24)}
                   cornerRadius={s(8)}
+                  onClick={() => navigate(parseUrl(href, true).href)}
                 >
                   {icon ? <Image
                     name='icon'
@@ -407,7 +418,7 @@ function Widget() {
                   width='fill-parent'
                   height='hug-contents'
                   fill={colors().txt}
-                  href={parseUrl(href, true).href}
+                  href=''
                   fontSize={s(16)}
                   inputBehavior={'wrap'}
                   inputFrameProps={{
