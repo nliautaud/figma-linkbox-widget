@@ -463,7 +463,7 @@ function Widget() {
               placeholder="https://"
               placeholderProps={{
                 fill: colors().txt,
-                fontSize: s(size),
+                fontSize: size,
                 fontWeight: 400
               }}
               value={href}
