@@ -130,15 +130,16 @@ function Widget() {
       return format(href)
     }
 
-    setFetchState(false)
+    if (!reset && href == str) return
+
     let url = parseUrl(str, true)
     if (!url) {
       setHref('')
       setError('')
+      setFetchState(false)
       return
     }
-    if (!reset && href == url.href)
-      return setFetchState(true)
+    if (!reset && href == parseUrl(str, false).href) return
 
     setHref(parseUrl(str, false).href)
     setFetchState(null) // loading...
