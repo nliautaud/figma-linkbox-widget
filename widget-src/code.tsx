@@ -14,6 +14,7 @@ function Widget() {
   const [type, setType] = useSyncedState<LinkType>('type', LinkType.none)
   const [href, setHref] = useSyncedState('href', '')
   const [title, setTitle] = useSyncedState('title', '')
+  const [tag, setTag] = useSyncedState('tag', '')
   const [userTitle, setUserTitle] = useSyncedState('userTitle', '')
   const [icon, setIcon] = useSyncedState('icon', '')
   // const [svgIcon, setSvgIcon] = useSyncedState('icon', '')
@@ -141,41 +142,118 @@ function Widget() {
   // const colors = () => theme == 'light' ? Themes.Light : Themes.Dark
   const colors = theme == Themes.Light ? Colors.Light : Colors.Dark
 
-  const ImageComponent = fetchState && showImage && image ? (
-    <Image
-      name='Image'
-      src={image}
-      width={vertical ? 'fill-parent' : s(160)}
-      height={vertical ? s(160) : 'fill-parent'}
-    />
-  ) : null
-
-  const IconComponent = (
+  const IconComponent =
     icon && <Image
       name='icon'
       src={icon}
       width={s(24)}
       height={s(24)}
     />
-    // || svgIcon && <SVG
-    //   src={svgIcon}
-    //   width={s(24)}
-    //   height={s(24)}
-    // />
-  )
+  // || svgIcon && <SVG
+  //   src={svgIcon}
+  //   width={s(24)}
+  //   height={s(24)}
+  // />
+
   const DefaultIcon =
-    type == LinkType.none ? 
-    <Frame
-      width={s(24)}
-      height={s(24)}
-      cornerRadius={s(8)}
-      fill={accent == defaultAccent ? colors.border : accent}
-    ></Frame> :
-    <SVG
-      src={Icons.type(type, theme)}
-      width={s(24)}
-      height={s(24)}
-    />
+    type == LinkType.none ?
+      <Frame
+        width={s(24)}
+        height={s(24)}
+        cornerRadius={s(8)}
+        fill={accent == defaultAccent ? colors.border : accent}
+      ></Frame> :
+      <SVG
+        src={Icons.type(type, theme)}
+        width={s(24)}
+        height={s(24)}
+      />
+
+  const tagLong = tag.length > 30
+  const tagAtBottom = tagLong && !(image && showImage && vertical )
+  const tagAtTitle = !tagLong && !(image && showImage )
+  const tagOnImage = !tagAtBottom && !tagAtTitle
+
+  const [test, setTest] = useSyncedState('test', false)
+  const TagComponent =
+    <AutoLayout
+      name='TagWrapper'
+      padding={tagLong ? {
+        horizontal: s(8),
+        vertical: s(4)
+      } : undefined}
+      positioning={ tagOnImage ? 'absolute' : undefined}
+      width={tagOnImage ? (vertical ? s(600) : s(160) - s(16)) : undefined}
+      y={s(12)}
+      horizontalAlignItems={'end'}
+      verticalAlignItems={'center'}
+    >
+      <SVG
+        name='AddTag'
+        src={Icons.svg.tag(accent == defaultAccent ? colors.txtFaded : accent)}
+        hidden={tag.length > 0}
+        onClick={() => setTag("tag")}
+        width={s(24)}
+        height={s(24)}
+        opacity={0}
+        hoverStyle={{
+          opacity: 1
+        }}
+      />
+      <AutoLayout
+        name='Tag'
+        hidden={tag.length == 0}
+        verticalAlignItems={'center'}
+        cornerRadius={s(99)}
+        fill={accent == defaultAccent ? theme == Themes.Light ? colors.txtFaded : colors.txtFaded : accent}
+        padding={{
+          horizontal: s(8),
+          vertical: s(4)
+        }}
+      >
+        <Text
+          name='tag-clone-for-resize'
+          fontSize={s(14)}
+          width='hug-contents'
+          height='hug-contents'
+          opacity={0}
+        >{tag}</Text>
+        <Input
+          positioning='absolute'
+          x={0} y={0}
+          width='fill-parent'
+          name='tag'
+          value={tag}
+          onTextEditEnd={(event) => setTag(event.characters.trim())}
+          fill={accent == defaultAccent ? theme == Themes.Light ? colors.bg : colors.bg : colors.bg}
+          href=''
+          fontSize={s(14)}
+          verticalAlignText='center'
+          inputBehavior={'truncate'}
+          inputFrameProps={{
+            name: 'Tag-Input',
+            padding: {
+              horizontal: s(8),
+              vertical: s(4)
+            }
+          }} />
+      </AutoLayout>
+    </AutoLayout>
+
+  const ImageComponent = fetchState && showImage && image ? (
+    <AutoLayout
+      width={vertical ? 'fill-parent' : s(160)}
+      height={vertical ? s(160) : 'fill-parent'}
+    >
+      <Image
+        name='Image'
+        src={image}
+        width='fill-parent'
+        height='fill-parent'
+      />
+      {tagOnImage && TagComponent}
+    </AutoLayout>
+  ) : null
 
   const component = (
     <AutoLayout
@@ -236,7 +314,7 @@ function Widget() {
                   cornerRadius={s(8)}
                   onClick={() => navigate(Url.withHttps(href)?.href)}
                 >
-                  {IconComponent || DefaultIcon }
+                  {IconComponent || DefaultIcon}
                 </Frame>
                 <Input
                   name='Title-Input'
@@ -258,6 +336,7 @@ function Widget() {
                     wrap: true
                   }}
                 />
+                {tagAtTitle && TagComponent}
               </AutoLayout>
               {desc && showDesc ?
                 <AutoLayout
@@ -278,8 +357,9 @@ function Widget() {
                   >{desc}</Text>
                 </AutoLayout> : null}
             </> : null}
-          {showUrl && <AutoLayout
-            name='URL'
+          <AutoLayout
+            name='URL row'
+            hidden={!showUrl}
             width={'fill-parent'}
             verticalAlignItems={'center'}
             spacing={s(8)}
@@ -287,43 +367,44 @@ function Widget() {
               vertical: 0,
               horizontal: s(4)
             }}
+            overflow='hidden'
           >
             <Input
-              name='url-input'
-              fontWeight='normal'
+              name='url'
+              href=''
+              value={href}
+              onTextEditEnd={(event) => onChange(event.characters)}
               placeholder="https://"
               placeholderProps={{
                 fill: colors.txt,
                 fontSize: size,
-                fontWeight: 400
+                fontWeight: 400,
               }}
-              value={href}
-              href=''
-              onTextEditEnd={(event) => onChange(event.characters)}
-              truncate={1}
-              width='fill-parent'
-              height='hug-contents'
-              fill={colors.txtFaded}
               fontSize={size}
-              inputBehavior={'truncate'}
+              fontWeight='normal'
+              fill={colors.txtFaded}
+              width='fill-parent'
+              // text wrap on overflow, "Enter" to validate
+              inputBehavior='truncate'
               inputFrameProps={{
+                name: 'Input',
                 hoverStyle: {
                   fill: colors.bgHover
                 },
                 cornerRadius: s(8),
                 padding: s(4),
-                overflow: 'scroll',
-                wrap: false
               }}
             />
-            {fetchState == null && <Text
+            <Text
               name='loading'
+              hidden={fetchState != null}
               fontSize={s(13)}
               fill={colors.txtFaded}
-            >Loading...</Text>}
-          </AutoLayout>}
-          {error ? <AutoLayout
+            >Loading...</Text>
+          </AutoLayout>
+          <AutoLayout
             name='Error'
+            hidden={!error}
             width={'fill-parent'}
             padding={{
               vertical: s(4),
@@ -335,7 +416,8 @@ function Widget() {
               width={'fill-parent'}
               fill={colors.error}
             >{error}</Text>
-          </AutoLayout> : null}
+          </AutoLayout>
+          {tagAtBottom && TagComponent}
         </AutoLayout>
       </AutoLayout>
       {!vertical && ImageComponent}
@@ -403,7 +485,7 @@ function Widget() {
         propertyName: 'showImage',
         isToggled: showImage,
         tooltip: 'Show image',
-        icon: Icons.svg.image,
+        icon: Icons.svg.image(),
       },
       {
         itemType: 'separator'

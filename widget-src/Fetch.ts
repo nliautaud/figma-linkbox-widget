@@ -3,10 +3,11 @@ const URL = require('url')
 import { HTMLElement, parse as parseHtml, valid } from 'node-html-parser'
 
 export enum LinkType {
-  none,
-  html,
-  code,
-  rss
+  none = 'none',
+  html = 'html',
+  code = 'code',
+  rss = 'rss',
+  image = 'image',
 }
 export interface FetchResult {
   type: LinkType
@@ -57,6 +58,12 @@ const proxy = async (url: string, proxy=false):Promise<FetchResult> => {
             .replace(/^\<\!\[CDATA\[(.*)\]\]\>$/, '$1')
         ).join("\n- ")
         : undefined
+    }
+  } else if(hasContentType(response, ["image/"])) {
+    return {
+      type: LinkType.image,
+      title: contentType.split(';')[0],
+      image: url,
     }
   } else if(hasContentType(response, ["text/html", "application/xhtml+xml"])) {
     const root = parseHtml(content)
