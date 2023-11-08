@@ -156,7 +156,7 @@ function Widget() {
   // />
 
   const DefaultIcon =
-    type == LinkType.none ?
+    type == LinkType.none || type == LinkType.html ?
       <Frame
         width={s(24)}
         height={s(24)}
