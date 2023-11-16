@@ -1,36 +1,15 @@
-Below are the steps to get your widget running. You can also find instructions at:
+[![cover](cover.png)](https://www.figma.com/community/widget/1291451369755931143/link-box)
 
-https://www.figma.com/widget-docs/setup-guide/
+<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iNDIiIHZpZXdCb3g9IjAgMCAyOCA0MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxjaXJjbGUgY3g9IjIxIiBjeT0iMjEiIHI9IjciIGZpbGw9IiMxQUJDRkUiLz4KICAgIDxwYXRoIGQ9Ik0xNCAxNEg3QzMuMTM0MDEgMTQgNC43NjgzN2UtMDcgMTcuMTM0IDQuNzY4MzdlLTA3IDIxVjIxQzQuNzY4MzdlLTA3IDI0Ljg2NiAzLjEzNDAxIDI4IDcgMjhIMTRWMTRaIiBmaWxsPSIjQTI1OUZGIi8+CiAgICA8cGF0aCBkPSJNMTQgMjhIN0MzLjEzNDAxIDI4IDQuNzY4MzdlLTA3IDMxLjEzNCA0Ljc2ODM3ZS0wNyAzNVYzNUM0Ljc2ODM3ZS0wNyAzOC44NjYgMy4xNDc2NSA0MiA3LjAxMzY1IDQyVjQyQzEwLjg2NDYgNDIgMTQgMzguODc4MiAxNCAzNS4wMjcyVjI4WiIgZmlsbD0iIzBBQ0Y4MyIvPgogICAgPHBhdGggZD0iTTE0IDBIN0MzLjEzNDAxIDAgNC43NjgzN2UtMDcgMy4xMzQwMSA0Ljc2ODM3ZS0wNyA3VjdDNC43NjgzN2UtMDcgMTAuODY2IDMuMTM0MDEgMTQgNyAxNEgxNFYwWiIgZmlsbD0iI0YyNEUxRSIvPgogICAgPHBhdGggZD0iTTE0IDBIMjFDMjQuODY2IDAgMjggMy4xMzQwMSAyOCA3VjdDMjggMTAuODY2IDI0Ljg2NiAxNCAyMSAxNEgxNFYwWiIgZmlsbD0iI0ZGNzI2MiIvPgo8L3N2Zz4K" width="8"/> **[Link Box](https://www.figma.com/community/widget/1291451369755931143/link-box)**  
+**Save and display your links in customizable boxes, in figma & figjam.**
 
-This widget template uses TypeScript and NPM, two standard tools in creating JavaScript applications.
+Bookmarks, button links, web cards, moodboards...
 
-First, download Node.js which comes with NPM. This will allow you to install TypeScript and other
-libraries. You can find the download link here:
-
-https://nodejs.org/en/download/
-
-Next, install TypeScript, esbuild and the latest type definitions by running:
-
-npm install
-
-If you are familiar with JavaScript, TypeScript will look very familiar. In fact, valid JavaScript code
-is already valid Typescript code.
-
-TypeScript adds type annotations to variables. This allows code editors such as Visual Studio Code
-to provide information about the Figma API while you are writing code, as well as help catch bugs
-you previously didn't notice.
-
-For more information, visit https://www.typescriptlang.org/
-
-Using TypeScript requires a compiler to convert TypeScript (widget-src/code.tsx) into JavaScript (dist/code.js)
-for the browser to run. We use esbuild to do this for us.
-
-We recommend writing TypeScript code using Visual Studio code:
-
-1. Download Visual Studio Code if you haven't already: https://code.visualstudio.com/.
-2. Open this directory in Visual Studio Code.
-3. Compile TypeScript to JavaScript: Run the "Terminal > Run Build Task..." menu item,
-   then select "npm: watch". You will have to do this again every time
-   you reopen Visual Studio Code.
-
-That's it! Visual Studio Code will regenerate the JavaScript file every time you save.
+- Preview html pages, txt & json endpoints, rss feeds...
+- Loads site icon, title, description and cover image
+- Editable title and url
+- Customizable layouts
+- Themes & color accents
+- Tags
+- Multiple sizes
+- Multiple data providers with fallbacks and error handling
