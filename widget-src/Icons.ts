@@ -1,4 +1,4 @@
-import { LinkType } from './Fetch'
+import { LinkType } from './types'
 import { Themes, Theme, Colors } from './Themes'
 
 const svg = {

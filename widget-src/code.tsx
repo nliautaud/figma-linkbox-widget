@@ -1,9 +1,11 @@
 const { widget } = figma
 const { useSyncedState, usePropertyMenu, Frame, AutoLayout, Text, SVG, Input, Image } = widget
 
-import { Fetch, Url, LinkType, FetchResult } from './Fetch'
+import { LinkType, FetchResult } from './types'
+import { Fetch, Url} from './Fetch'
 import { Colors, Themes } from './Themes'
 import { Icons } from './Icons'
+import { log } from './utils'
 
 const defaultAccent: string = "#eee"
 
@@ -31,8 +33,6 @@ function Widget() {
   const [size, setSize] = useSyncedState('size', 16)
   const [vertical, setVertical] = useSyncedState('vertical', false)
 
-  const [forceFramely, setUseIframely] = useSyncedState('useIframely', false)
-
   // size in px relative to 16
   const s = (target: number) => target * (size / 16)
 
@@ -58,6 +58,8 @@ function Widget() {
       setHref('')
       setError('')
       setFetchState(false)
+      figma.notify('🧹 Cleared box', { timeout: 1000 })
+      log('🧹 Cleared box')
       return
     }
     const simpleUrl = Url.withoutHttps(str)?.href
@@ -75,49 +77,31 @@ function Widget() {
     setUserTitle('')
     setImage('')
     setDesc('')
-
-
-    let data: FetchResult = { type: LinkType.none }
-    if (!forceFramely) {
-      try {
-        data = await Fetch.proxy(url)
-      } catch (err: any) {
-        console.log('Fallback', `(${err.message})`)
-        try {
-          data = await Fetch.proxy(url, true)
-        } catch (err: any) {
-          console.log('Fallback', `(${err.message})`)
-          try {
-            data = await Fetch.framely(url)
-          } catch (err: any) {
-            setError(err.message.replace('Iframely', 'Error :'))
-            setFetchState(false)
-            return
-          }
-        }
-      }
+    log('🔄 Loading URL...', url)
+    const notif = figma.notify('🔄 Loading URL...', { timeout: Infinity })
+    try {
+      const data = await Fetch.url(url)
+      setError('')
+      setFetchState(true)
+      setType(data.type)
+      if (data.icon?.url)
+        setIcon(data.icon.url)
+      // if (data.icon?.svg)
+      //   setSvgIcon(data.icon?.svg)
+      setTitle(data.title || '')
+      setImage(data.image || '')
+      setDesc(data.description || '')
+      setIsCode(data.code || false)
+      notif.cancel()
+      figma.notify('🌟 Done', { timeout: 1000 })
+    } catch (err: any) {
+      log(err.message)
+      notif.cancel()
+      figma.notify('❌ URL unreachable', { error: true, timeout: 2000 })
+      setError(err.message)
+      setFetchState(false)
+      return
     }
-    if (forceFramely) {
-      try {
-        data = await Fetch.framely(url)
-        setFetchState(true)
-      } catch (err: any) {
-        setError(err.message.replace('Iframely', 'Error :'))
-        setFetchState(false)
-        return
-      }
-    }
-    setError('')
-    setFetchState(true)
-    setType(data.type)
-    if (data.icon?.url)
-      setIcon(data.icon.url)
-    // if (data.icon?.svg)
-    //   setSvgIcon(data.icon?.svg)
-    setTitle(data.title || '')
-    setImage(data.image || '')
-    setDesc(data.description || '')
-    setIsCode(data.code || false)
   }
 
   const navigate = (url: string | undefined): Promise<void> => {
@@ -487,22 +471,15 @@ function Widget() {
         tooltip: 'Show image',
         icon: Icons.svg.image(),
       },
-      {
-        itemType: 'separator'
-      },
-      {
-        itemType: 'toggle',
-        propertyName: 'iframely',
-        isToggled: forceFramely,
-        tooltip: 'Force API',
-        icon: Icons.svg.iframely,
-      },
-      {
-        itemType: 'action',
-        propertyName: 'reload',
-        tooltip: 'Reload',
-        icon: Icons.svg.reload,
-      }
+      // {
+      //   itemType: 'separator'
+      // },
+      // {
+      //   itemType: 'action',
+      //   propertyName: 'reload',
+      //   tooltip: 'Reload',
+      //   icon: Icons.svg.reload,
+      // }
     ],
     ({ propertyName, propertyValue }) => {
       if (propertyName === "accent" && propertyValue) {
@@ -517,9 +494,6 @@ function Widget() {
         setShowImage(!showImage)
       } else if (propertyName === "size") {
         setSize(Number(propertyValue))
-      } else if (propertyName === "iframely") {
-        setUseIframely(!forceFramely)
-        reload()
       } else if (propertyName === "reload") {
         reload()
       } else if (propertyName === "vertical") {
