@@ -18,6 +18,6 @@
   },
   "dependencies": {
     "node-html-parser": "^6.1.10",
-    "url": "^0.11.3"
+    "url": "^0.11.4"
   }
 }
