@@ -13,3 +13,5 @@ Bookmarks, button links, web cards, moodboards...
 - Tags
 - Multiple sizes
 - Multiple data providers with fallbacks and error handling
+
+The metadata is provided by fetching the pages and/or by using the free apis plan of [jsonlink](https://jsonlink.io/).  
