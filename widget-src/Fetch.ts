@@ -2,14 +2,12 @@ import { log } from './utils'
 
 import { FetchResult, FetchResponse, Provider } from './types'
 import Direct from './providers/direct'
-import Corsproxy from './providers/corsproxy'
 import Jsonlink from './providers/jsonlink'
-import Framely from './providers/framely'
 
 const URL = require('url')
 
 async function url(url:string):Promise<FetchResult> {
-  const stack:Provider[] = [Direct, Corsproxy, Framely, Jsonlink]
+  const stack:Provider[] = [Direct, Jsonlink]
   for (const provider of stack) {
     try {
       const resp = await provider.fetch(url)
